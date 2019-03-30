@@ -1,0 +1,17 @@
+name: paparazzi
+dependencies:
+- python=3.6
+- pip
+- pip:
+  - beautifulsoup4
+  - gensim
+  - jupyter
+  - keras
+  - matplotlib
+  - networkx
+  - nltk
+  - numpy
+  - pandas
+  - requests
+  - tensorflow
+
