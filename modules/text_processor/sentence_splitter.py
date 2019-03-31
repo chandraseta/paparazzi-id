@@ -1,7 +1,7 @@
 import re
 
 
-def split_to_sentences(text):
+def split_to_sentences(text: str) -> [str]:
     # Convert . -> $$ inside parenthesis and quotes
     text = re.sub('\.(?=[^(]*\\))', '$$', text)
     text = re.sub(r"(?<=([\"]\b))(?:(?=(\\?))\2.)*?(?=\1)", lambda x:x.group(0).replace('.', '$$'), text)
