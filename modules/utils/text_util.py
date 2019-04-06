@@ -1,4 +1,6 @@
-def load_stopwords(stopwords_filepath: str) -> [str]:
+STOPWORDS_ID_FILEPATH = 'data/indo_stopwords.txt'
+
+def load_stopwords(stopwords_filepath: str = STOPWORDS_ID_FILEPATH) -> [str]:
     sw_file = open(stopwords_filepath)
     stopwords = []
 

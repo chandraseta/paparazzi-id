@@ -12,6 +12,7 @@ dependencies:
   - nltk
   - numpy
   - pandas
+  - scikit-learn
   - requests
   - tensorflow
 
