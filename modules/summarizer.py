@@ -4,8 +4,7 @@ import numpy as np
 
 from sklearn.metrics.pairwise import cosine_similarity
 
-from modules.text_processor.sentence_splitter import split_to_sentences
-from modules.utils.text_util import load_stopwords
+from modules.utils.text_util import load_stopwords, split_to_sentences
 from modules.word_embedding import WordEmbedding
 
 
@@ -99,6 +98,15 @@ class Summarizer:
             summarize_result += ' ' + sentences[index]
 
         return summarize_result.strip()
+
+    def pagerank(A, eps=0.0001, d=0.85):
+        P = np.ones(len(A)) / len(A)
+        while True:
+            new_P = np.ones(len(A)) * (1 - d) / len(A) + d * A.T.dot(P)
+            delta = abs(new_P - P).sum()
+            if delta <= eps:
+                return new_P
+            P = new_P
 
     def _calculate_sentence_vector(self, sentence: str, remove_stopwords=True) -> np.ndarray:
         sentence_tokens = gensim.utils.simple_preprocess(sentence)
