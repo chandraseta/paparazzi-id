@@ -103,4 +103,17 @@ class Summarizer:
 
         return indices, summarize_result.strip()
 
-    def
+    @staticmethod
+    def n_first_sentences(text, n_sentence: int, is_tokenized_sent: bool = False) -> ([int], str):
+        sentences = text
+        if not is_tokenized_sent:
+            sentences = split_to_sentences(text)
+
+        indices = []
+        summarize_result = ''
+
+        for index in range(n_sentence):
+            summarize_result += ' ' + sentences[index]
+            indices.append(index)
+
+        return indices, summarize_result.strip()
