@@ -2,33 +2,40 @@ import glob
 import json
 import re
 
-
-INDOSUM_FILEPATH = 'data/indosum/'
-INDOSUM_EXTENSION = '.jsonl'
-
-NO_LEADING_SPACE_SYMBOLS = [',', '.', '!', '?']
+from modules.constants import Constants
 
 
 def join_tokens(tokens: [str]) -> str:
     sentence = ''
 
     is_closing_bracket = False
-    is_closing_quote = False
-    skip_once = False
+    is_closing_double_quote = False
+    is_closing_single_quote = False
+    skip_once_double_quote = False
+    skip_once_single_quote = False
 
     for token in tokens:
         token = token.strip()
+        token = token.replace('“', '"')
+        token = token.replace('”', '"')
+        token = token.replace('---', '-')
+        token = token.replace('--', '-')
 
         if is_closing_bracket and token == ')':
             sentence = sentence[:-1]
             is_closing_bracket = False
 
-        if is_closing_quote and token == '"':
+        if is_closing_double_quote and token == '"':
             sentence = sentence[:-1]
-            is_closing_quote = False
-            skip_once = True
+            is_closing_double_quote = False
+            skip_once_double_quote = True
 
-        if token in NO_LEADING_SPACE_SYMBOLS:
+        if is_closing_single_quote and token == '\'':
+            sentence = sentence[:-1]
+            is_closing_single_quote = False
+            skip_once_single_quote = True
+
+        if token in Constants.NO_LEADING_SPACE_SYMBOLS:
             sentence = sentence[:-1]
 
         sentence += token + ' '
@@ -38,11 +45,18 @@ def join_tokens(tokens: [str]) -> str:
             is_closing_bracket = True
 
         if token == '"':
-            if not skip_once:
+            if not skip_once_double_quote:
                 sentence = sentence[:-1]
-                is_closing_quote = True
+                is_closing_double_quote = True
             else:
-                skip_once = False
+                skip_once_double_quote = False
+
+        if token == '\'':
+            if not skip_once_single_quote:
+                sentence = sentence[:-1]
+                is_closing_single_quote = True
+            else:
+                skip_once_single_quote = False
 
     sentence = sentence.replace('-', ' - ')
     sentence = re.sub('\s+', ' ', sentence).strip()
@@ -50,8 +64,8 @@ def join_tokens(tokens: [str]) -> str:
     return sentence
 
 
-def get_articles(indosum_filepath: str = INDOSUM_FILEPATH) -> [[list]]:
-    filepaths = glob.glob(indosum_filepath + '*' + INDOSUM_EXTENSION)
+def get_articles(indosum_filepath: str = Constants.INDOSUM_FILEPATH) -> [[list]]:
+    filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
     articles = []
 
     for filepath in filepaths:
@@ -73,8 +87,8 @@ def get_articles(indosum_filepath: str = INDOSUM_FILEPATH) -> [[list]]:
     return articles
 
 
-def get_indices(indosum_filepath: str = INDOSUM_FILEPATH):
-    filepaths = glob.glob(indosum_filepath + '*' + INDOSUM_EXTENSION)
+def get_indices(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
+    filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
     summaries_indices = []
 
     for filepath in filepaths:
@@ -99,8 +113,8 @@ def get_indices(indosum_filepath: str = INDOSUM_FILEPATH):
     return summaries_indices
 
 
-def get_summaries(indosum_filepath: str = INDOSUM_FILEPATH):
-    filepaths = glob.glob(indosum_filepath + '*' + INDOSUM_EXTENSION)
+def get_summaries(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
+    filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
     summaries = []
 
     for filepath in filepaths:
@@ -121,8 +135,58 @@ def get_summaries(indosum_filepath: str = INDOSUM_FILEPATH):
     return summaries
 
 
-def get_articles_summaries_indices(indosum_filepath: str = INDOSUM_FILEPATH):
-    filepaths = glob.glob(indosum_filepath + '*' + INDOSUM_EXTENSION)
+def get_gold_labels_length(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
+    filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
+    gold_labels_length = []
+
+    for filepath in filepaths:
+        file = open(filepath, 'r')
+
+        for line in file:
+            data = json.loads(line)
+
+            gold_labels = data['gold_labels']
+
+            counter = 0
+            for paragraph_labels in gold_labels:
+                for sentence_labels in paragraph_labels:
+                    counter += 1
+
+            gold_labels_length.append(counter)
+
+    return gold_labels_length
+
+
+def get_articles_by_sentences(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
+    filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
+    articles = []
+
+    for filepath in filepaths:
+        file = open(filepath, 'r')
+
+        for line in file:
+            data = json.loads(line)
+
+            data_paragraphs = data['paragraphs']
+            paragraphs = []
+
+            for paragraph in data_paragraphs:
+                joined_sent = ''
+                for sentence in paragraph:
+                    sentence_tokens = []
+                    for sentence_token in sentence:
+                        sentence_tokens.append(sentence_token)
+                    joined_sent = join_tokens(sentence_tokens)
+
+                paragraphs.append(joined_sent)
+
+            articles.append(paragraphs)
+
+    return articles
+
+
+def get_articles_summaries_indices(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
+    filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
     articles = []
     summaries = []
     summaries_indices = []
