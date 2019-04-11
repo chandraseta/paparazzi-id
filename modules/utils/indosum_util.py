@@ -87,6 +87,28 @@ def get_articles(indosum_filepath: str = Constants.INDOSUM_FILEPATH) -> [[list]]
     return articles
 
 
+def get_summaries(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
+    filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
+    summaries = []
+
+    for filepath in filepaths:
+        file = open(filepath, 'r')
+
+        for line in file:
+            data = json.loads(line)
+
+            summary = data['summary']
+            summary_tokens = []
+
+            for sentence in summary:
+                for sentence_token in sentence:
+                    summary_tokens.append(sentence_token)
+
+            summaries.append(join_tokens(summary_tokens))
+
+    return summaries
+
+
 def get_indices(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
     filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
     summaries_indices = []
@@ -113,28 +135,6 @@ def get_indices(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
     return summaries_indices
 
 
-def get_summaries(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
-    filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
-    summaries = []
-
-    for filepath in filepaths:
-        file = open(filepath, 'r')
-
-        for line in file:
-            data = json.loads(line)
-
-            summary = data['summary']
-            summary_tokens = []
-
-            for sentence in summary:
-                for sentence_token in sentence:
-                    summary_tokens.append(sentence_token)
-
-            summaries.append(join_tokens(summary_tokens))
-
-    return summaries
-
-
 def get_gold_labels_length(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
     filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
     gold_labels_length = []
@@ -150,7 +150,8 @@ def get_gold_labels_length(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
             counter = 0
             for paragraph_labels in gold_labels:
                 for sentence_labels in paragraph_labels:
-                    counter += 1
+                    if sentence_labels:
+                        counter += 1
 
             gold_labels_length.append(counter)
 
@@ -171,14 +172,12 @@ def get_articles_by_sentences(indosum_filepath: str = Constants.INDOSUM_FILEPATH
             paragraphs = []
 
             for paragraph in data_paragraphs:
-                joined_sent = ''
                 for sentence in paragraph:
                     sentence_tokens = []
                     for sentence_token in sentence:
                         sentence_tokens.append(sentence_token)
                     joined_sent = join_tokens(sentence_tokens)
-
-                paragraphs.append(joined_sent)
+                    paragraphs.append(joined_sent)
 
             articles.append(paragraphs)
 
@@ -197,15 +196,18 @@ def get_articles_summaries_indices(indosum_filepath: str = Constants.INDOSUM_FIL
         for line in file:
             data = json.loads(line)
 
-            paragraphs = data['paragraphs']
-            sentence_tokens = []
+            data_paragraphs = data['paragraphs']
+            paragraphs = []
 
-            for paragraph in paragraphs:
+            for paragraph in data_paragraphs:
                 for sentence in paragraph:
+                    sentence_tokens = []
                     for sentence_token in sentence:
                         sentence_tokens.append(sentence_token)
+                    joined_sent = join_tokens(sentence_tokens)
+                    paragraphs.append(joined_sent)
 
-            articles.append(join_tokens(sentence_tokens))
+            articles.append(paragraphs)
 
             summary = data['summary']
             summary_tokens = []
@@ -214,17 +216,17 @@ def get_articles_summaries_indices(indosum_filepath: str = Constants.INDOSUM_FIL
                 for sentence_token in sentence:
                     summary_tokens.append(sentence_token)
 
-            summaries.append(join_tokens(summary_tokens))
+            summaries.append(summary_tokens)
 
             gold_labels = data['gold_labels']
             indices = []
 
-            current_index = 0
             for paragraph_labels in gold_labels:
                 for sentence_labels in paragraph_labels:
                     if sentence_labels:
-                        indices.append(current_index)
-                    current_index += 1
+                        indices.append(1)
+                    else:
+                        indices.append(0)
 
             summaries_indices.append(indices)
 
