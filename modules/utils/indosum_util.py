@@ -184,8 +184,17 @@ def get_articles_by_sentences(indosum_filepath: str = Constants.INDOSUM_FILEPATH
     return articles
 
 
-def get_articles_summaries_indices(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
-    filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
+def get_articles_summaries_indices(
+        indosum_filepath: str = Constants.INDOSUM_FILEPATH,
+        data_types: [str] = None
+) -> ([[str]], [[str]], [[int]]):
+    if data_types is None:
+        data_types = ['train', 'dev', 'test']
+
+    filepaths = []
+    for data_type in data_types:
+        filepaths.extend(glob.glob(indosum_filepath + data_type + '*' + Constants.INDOSUM_EXTENSION))
+
     articles = []
     summaries = []
     summaries_indices = []

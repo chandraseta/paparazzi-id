@@ -29,7 +29,8 @@ class SentenceEmbedding:
                 sentence_vector += self._word_embedding.word2vec(token)
                 n_token += 1
 
-        sentence_vector = sentence_vector / float(n_token)
+        if n_token > 0:
+            sentence_vector = sentence_vector / float(n_token)
         return sentence_vector
 
     def calculate_vector_flatten(
