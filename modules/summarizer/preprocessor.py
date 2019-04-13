@@ -36,7 +36,7 @@ class Preprocessor:
     def load_indosum_data(
             sentence_embedding: SentenceEmbedding,
             type: [str],
-            articles_length_limit: int = 80,
+            articles_length_limit: int = 35,
             summaries_length_limit: int = 13
     ) -> ([str], [[np.array]]):
         articles, _, gold_labels = get_articles_summaries_indices(data_types=type)
@@ -45,7 +45,7 @@ class Preprocessor:
         filtered_gold_labels = []
 
         for index, article in enumerate(articles):
-            if len(article) > articles_length_limit or len(gold_labels) > summaries_length_limit:
+            if len(article) <= articles_length_limit and len(gold_labels[index]) <= summaries_length_limit:
                 filtered_articles.append(article)
                 filtered_gold_labels.append(gold_labels[index])
 
@@ -84,7 +84,7 @@ class Preprocessor:
     def load_indosum_data_by_sentence(
             sentence_embedding: SentenceEmbedding,
             type: [str],
-            articles_length_limit: int = 80,
+            articles_length_limit: int = 35,
             summaries_length_limit: int = 13
     ) -> (np.ndarray, np.ndarray):
         articles, _, gold_labels = get_articles_summaries_indices(data_types=type)
@@ -93,7 +93,7 @@ class Preprocessor:
         filtered_gold_labels = []
 
         for index, article in enumerate(articles):
-            if len(article) > articles_length_limit or len(gold_labels) > summaries_length_limit:
+            if len(article) <= articles_length_limit and len(gold_labels[index]) <= summaries_length_limit:
                 filtered_articles.append(article)
                 filtered_gold_labels.append(gold_labels[index])
 

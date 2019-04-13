@@ -1,5 +1,3 @@
-import numpy as np
-
 from modules.sentence_embedding import SentenceEmbedding
 from modules.summarizer.preprocessor import Preprocessor
 from modules.summarizer.models import FFNNModel, GRUModel, LSTMModel
@@ -11,8 +9,8 @@ sentence_embedding = SentenceEmbedding()
 train_sentences, train_labels = Preprocessor.load_indosum_data_by_sentence(sentence_embedding, type=['train', 'dev'])
 train_seq_sentences, train_seq_labels = Preprocessor.load_indosum_data(sentence_embedding, type=['train', 'dev'])
 
-test_sentences, test_labels = Preprocessor.load_indosum_data_by_sentence(sentence_embedding, type=['test'])
-test_seq_sentences, test_seq_labels = Preprocessor.load_indosum_data(sentence_embedding, type=['test'])
+# test_sentences, test_labels = Preprocessor.load_indosum_data_by_sentence(sentence_embedding, type=['test'])
+# test_seq_sentences, test_seq_labels = Preprocessor.load_indosum_data(sentence_embedding, type=['test'])
 
 
 def train_ffnn_model():
@@ -112,16 +110,13 @@ def load_and_test_bilstm_model():
 
 if __name__=='__main__':
     train_ffnn_model()
-    load_and_test_ffnn_model()
-
     train_gru_model()
-    load_and_test_gru_model()
-
     train_lstm_model()
-    load_and_test_lstm_model()
-
     train_bigru_model()
-    load_and_test_bigru_model()
-
     train_bilstm_model()
-    load_and_test_bilstm_model()
+
+    # load_and_test_ffnn_model()
+    # load_and_test_gru_model()
+    # load_and_test_lstm_model()
+    # load_and_test_bigru_model()
+    # load_and_test_bilstm_model()

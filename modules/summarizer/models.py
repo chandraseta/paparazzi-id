@@ -1,6 +1,6 @@
 import numpy as np
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from keras.layers import Input, Dense, TimeDistributed
 from keras.layers import LeakyReLU, Dropout, Bidirectional
 from keras.layers import GRU, LSTM
@@ -65,7 +65,7 @@ class FFNNModel(BaseModel):
 class GRUModel(BaseModel):
     def __init__(self):
         super().__init__()
-        inputs = Input(shape=(80, Constants.WORD_EMBEDDING_DIMENSION,))
+        inputs = Input(shape=(35, Constants.WORD_EMBEDDING_DIMENSION,))
 
         gru_1 = GRU(
             64,
@@ -99,7 +99,7 @@ class GRUModel(BaseModel):
 class LSTMModel(BaseModel):
     def __init__(self):
         super().__init__()
-        inputs = Input(shape=(80, Constants.WORD_EMBEDDING_DIMENSION,))
+        inputs = Input(shape=(35, Constants.WORD_EMBEDDING_DIMENSION,))
 
         lstm_1 = LSTM(
             64,
@@ -133,7 +133,7 @@ class LSTMModel(BaseModel):
 class BiGRUModel(BaseModel):
     def __init__(self):
         super().__init__()
-        inputs = Input(shape=(80, Constants.WORD_EMBEDDING_DIMENSION,))
+        inputs = Input(shape=(35, Constants.WORD_EMBEDDING_DIMENSION,))
 
         gru_1 = Bidirectional(GRU(
             64,
@@ -167,7 +167,7 @@ class BiGRUModel(BaseModel):
 class BiLSTMModel(BaseModel):
     def __init__(self):
         super().__init__()
-        inputs = Input(shape=(80, Constants.WORD_EMBEDDING_DIMENSION,))
+        inputs = Input(shape=(35, Constants.WORD_EMBEDDING_DIMENSION,))
 
         lstm_1 = Bidirectional(LSTM(
             64,
