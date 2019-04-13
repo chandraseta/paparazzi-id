@@ -30,6 +30,7 @@ class WordEmbedding:
         return word_embeddings
 
     def word2vec(self, word: str) -> np.ndarray:
+        word = word.lower()
         if word in self._word_embeddings_dict:
             return self._word_embeddings_dict[word]
         else:
