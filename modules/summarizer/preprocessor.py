@@ -57,9 +57,6 @@ class Preprocessor:
             )
             vectorized_articles.append(vectorized_article)
 
-            # DEBUG
-            break
-
         # One-Hot encode gold labels
         encoded_gold_labels = []
         for article_label in filtered_gold_labels:
@@ -78,8 +75,8 @@ class Preprocessor:
 
             encoded_gold_labels.append(ohe_label)
 
-            # DEBUG
-            break
+        vectorized_articles = np.array(vectorized_articles)
+        encoded_gold_labels = np.array(encoded_gold_labels)
 
         return vectorized_articles, encoded_gold_labels
 
@@ -109,9 +106,6 @@ class Preprocessor:
                 )
                 vectorized_sentences.append(vectorized_sentence)
 
-                # DEBUG
-                break
-
         # One-Hot encode gold labels
         encoded_gold_labels = []
         for article_label in filtered_gold_labels:
@@ -121,10 +115,7 @@ class Preprocessor:
                 else:
                     encoded_gold_labels.append(np.array([0, 1]))
 
-                # DEBUG
-                break
+        vectorized_sentences = np.array(vectorized_sentences)
+        encoded_gold_labels = np.array(encoded_gold_labels)
 
-        np_sentences = np.array(vectorized_sentences)
-        np_labels = np.array(encoded_gold_labels)
-
-        return np_sentences, np_labels
+        return vectorized_sentences, encoded_gold_labels
