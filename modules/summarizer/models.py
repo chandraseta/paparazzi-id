@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 from abc import ABC
 from keras.layers import Input, Dense, TimeDistributed
@@ -15,12 +16,14 @@ class BaseModel(ABC):
     def __init__(self):
         self._model = None
 
-    def train(self, x_train: np.ndarray, y_train: np.ndarray):
-        self._model.fit(
+    def train(self, x_train: np.ndarray, y_train: np.ndarray, log_path: str):
+        history = self._model.fit(
             x_train,
             y_train,
             epochs=50
         )
+        logfile = open(Constants.MODEL_PATH + log_path, 'w+')
+        pickle.dump(history.history, logfile)
 
     def predict(self, x: np.ndarray) -> np.ndarray:
         return self._model.predict(x)

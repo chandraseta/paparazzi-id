@@ -15,31 +15,31 @@ test_seq_sentences, test_seq_labels = Preprocessor.load_indosum_data(sentence_em
 
 def train_ffnn_model():
     ffnn = FFNNModel()
-    ffnn.train(train_sentences, train_labels)
+    ffnn.train(train_sentences, train_labels, 'ffnn_v2_hist.pickle')
     ffnn.save('ffnn_v2')
 
 
 def train_gru_model():
     gru = GRUModel()
-    gru.train(train_seq_sentences, train_seq_labels)
+    gru.train(train_seq_sentences, train_seq_labels, 'gru_v2_hist.pickle')
     gru.save('gru_v2')
 
 
 def train_lstm_model():
     lstm = LSTMModel()
-    lstm.train(train_seq_sentences, train_seq_labels)
+    lstm.train(train_seq_sentences, train_seq_labels, 'lstm_v2_hist.pickle')
     lstm.save('lstm_v2')
 
 
 def train_bigru_model():
     bigru = BiGRUModel()
-    bigru.train(train_seq_sentences, train_seq_labels)
+    bigru.train(train_seq_sentences, train_seq_labels, 'bigru_v2_hist.pickle')
     bigru.save('bigru_v2')
 
 
 def train_bilstm_model():
     bilstm = BiLSTMModel()
-    bilstm.train(train_seq_sentences, train_seq_labels)
+    bilstm.train(train_seq_sentences, train_seq_labels, 'bilstm_v2_hist.pickle')
     bilstm.save('bilstm_v2')
 
 
@@ -47,6 +47,7 @@ def load_and_test_ffnn_model():
     ffnn = FFNNModel()
     ffnn.load('ffnn_v2')
     loss, accuracy, precision, recall, f1 = ffnn.evaluate(test_sentences, test_labels)
+    print('Loss: {} Accuracy: {} Precision: {} Recall: {} F1: {}'.format(loss, accuracy, precision, recall, f1))
 
     logfile = open('models/ffnn.log', 'a+')
     logfile.write('Loss: {}\n'.format(loss))
@@ -60,6 +61,7 @@ def load_and_test_gru_model():
     gru = GRUModel()
     gru.load('gru_v2')
     loss, accuracy, precision, recall, f1 = gru.evaluate(test_seq_sentences, test_seq_labels)
+    print('Loss: {} Accuracy: {} Precision: {} Recall: {} F1: {}'.format(loss, accuracy, precision, recall, f1))
 
     logfile = open('models/gru.log', 'a+')
     logfile.write('Loss: {}\n'.format(loss))
@@ -73,6 +75,7 @@ def load_and_test_lstm_model():
     lstm = LSTMModel()
     lstm.load('lstm_v2')
     loss, accuracy, precision, recall, f1 = lstm.evaluate(test_seq_sentences, test_seq_labels)
+    print('Loss: {} Accuracy: {} Precision: {} Recall: {} F1: {}'.format(loss, accuracy, precision, recall, f1))
 
     logfile = open('models/lstm.log', 'a+')
     logfile.write('Loss: {}\n'.format(loss))
@@ -86,6 +89,7 @@ def load_and_test_bigru_model():
     bigru = BiGRUModel()
     bigru.load('bigru_v2')
     loss, accuracy, precision, recall, f1 = bigru.evaluate(test_seq_sentences, test_seq_labels)
+    print('Loss: {} Accuracy: {} Precision: {} Recall: {} F1: {}'.format(loss, accuracy, precision, recall, f1))
 
     logfile = open('models/bigru.log', 'a+')
     logfile.write('Loss: {}\n'.format(loss))
@@ -110,13 +114,16 @@ def load_and_test_bilstm_model():
 
 if __name__=='__main__':
     train_ffnn_model()
-    train_gru_model()
-    train_lstm_model()
-    train_bigru_model()
-    train_bilstm_model()
-
     load_and_test_ffnn_model()
+
+    train_gru_model()
     load_and_test_gru_model()
+
+    train_lstm_model()
     load_and_test_lstm_model()
+
+    train_bigru_model()
     load_and_test_bigru_model()
+
+    train_bilstm_model()
     load_and_test_bilstm_model()
