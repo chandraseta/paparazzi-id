@@ -22,7 +22,7 @@ class BaseModel(ABC):
             y_train,
             epochs=50
         )
-        logfile = open(Constants.MODEL_PATH + log_path, 'w+')
+        logfile = open(Constants.MODEL_PATH + log_path, 'wb+')
         pickle.dump(history.history, logfile)
 
     def predict(self, x: np.ndarray) -> np.ndarray:
