@@ -52,9 +52,9 @@ def load_and_test_ffnn_model():
     logfile = open('models/ffnn.log', 'a+')
     logfile.write('Loss: {}\n'.format(loss))
     logfile.write('Accuracy: {}\n'.format(accuracy))
-    logfile.write('Precision: {}'.format(precision))
-    logfile.write('Recall: {}'.format(recall))
-    logfile.write('F1: {}'.format(f1))
+    logfile.write('Precision: {}\n'.format(precision))
+    logfile.write('Recall: {}\n'.format(recall))
+    logfile.write('F1: {}\n\n'.format(f1))
 
 
 def load_and_test_gru_model():
@@ -66,9 +66,9 @@ def load_and_test_gru_model():
     logfile = open('models/gru.log', 'a+')
     logfile.write('Loss: {}\n'.format(loss))
     logfile.write('Accuracy: {}\n'.format(accuracy))
-    logfile.write('Precision: {}'.format(precision))
-    logfile.write('Recall: {}'.format(recall))
-    logfile.write('F1: {}'.format(f1))
+    logfile.write('Precision: {}\n'.format(precision))
+    logfile.write('Recall: {}\n'.format(recall))
+    logfile.write('F1: {}\n\n'.format(f1))
 
 
 def load_and_test_lstm_model():
@@ -80,36 +80,36 @@ def load_and_test_lstm_model():
     logfile = open('models/lstm.log', 'a+')
     logfile.write('Loss: {}\n'.format(loss))
     logfile.write('Accuracy: {}\n'.format(accuracy))
-    logfile.write('Precision: {}'.format(precision))
-    logfile.write('Recall: {}'.format(recall))
-    logfile.write('F1: {}'.format(f1))
+    logfile.write('Precision: {}\n'.format(precision))
+    logfile.write('Recall: {}\n'.format(recall))
+    logfile.write('F1: {}\n\n'.format(f1))
 
 
 def load_and_test_bigru_model():
     bigru = BiGRUModel()
     bigru.load('bigru_v2')
     loss, accuracy, precision, recall, f1 = bigru.evaluate(test_seq_sentences, test_seq_labels)
-    print('Loss: {} Accuracy: {} Precision: {} Recall: {} F1: {}'.format(loss, accuracy, precision, recall, f1))
 
     logfile = open('models/bigru.log', 'a+')
     logfile.write('Loss: {}\n'.format(loss))
     logfile.write('Accuracy: {}\n'.format(accuracy))
-    logfile.write('Precision: {}'.format(precision))
-    logfile.write('Recall: {}'.format(recall))
-    logfile.write('F1: {}'.format(f1))
+    logfile.write('Precision: {}\n'.format(precision))
+    logfile.write('Recall: {}\n'.format(recall))
+    logfile.write('F1: {}\n\n'.format(f1))
 
 
 def load_and_test_bilstm_model():
     bilstm = BiLSTMModel()
     bilstm.load('bilstm_v2')
     loss, accuracy, precision, recall, f1 = bilstm.evaluate(test_seq_sentences, test_seq_labels)
+    print('Loss: {} Accuracy: {} Precision: {} Recall: {} F1: {}'.format(loss, accuracy, precision, recall, f1))
 
     logfile = open('models/bilstm.log', 'a+')
     logfile.write('Loss: {}\n'.format(loss))
     logfile.write('Accuracy: {}\n'.format(accuracy))
-    logfile.write('Precision: {}'.format(precision))
-    logfile.write('Recall: {}'.format(recall))
-    logfile.write('F1: {}'.format(f1))
+    logfile.write('Precision: {}\n'.format(precision))
+    logfile.write('Recall: {}\n'.format(recall))
+    logfile.write('F1: {}\n\n'.format(f1))
 
 
 if __name__=='__main__':
