@@ -3,6 +3,7 @@ import numpy as np
 from modules.constants import Constants
 from modules.sentence_embedding import SentenceEmbedding
 from modules.utils.indosum_util import get_articles_summaries_indices
+from modules.utils.text_util import split_to_sentences
 
 
 class Preprocessor:
@@ -17,7 +18,6 @@ class Preprocessor:
     @staticmethod
     def calculate_sentence_embedding_by_article(
             sentences: [str],
-            articles_length_limit: int,
             sentence_embedding: SentenceEmbedding
     ) -> [np.ndarray]:
         sentence_vectors = []
@@ -26,26 +26,21 @@ class Preprocessor:
             sentence_vectors.append(sentence_embedding.calculate_vector_avg(sentence))
             n_sentence += 1
 
-        while n_sentence < articles_length_limit:
+        while n_sentence < Constants.MAXIMUM_SENTENCE_LENGTH:
             sentence_vectors.append(np.zeros((Constants.WORD_EMBEDDING_DIMENSION,)))
             n_sentence += 1
 
         return sentence_vectors
 
     @staticmethod
-    def load_indosum_data(
-            sentence_embedding: SentenceEmbedding,
-            type: [str],
-            articles_length_limit: int = 35,
-            summaries_length_limit: int = 13
-    ) -> ([str], [[np.array]]):
+    def load_indosum_data(sentence_embedding: SentenceEmbedding, type: [str]) -> ([str], [[np.array]]):
         articles, _, gold_labels = get_articles_summaries_indices(data_types=type)
 
         filtered_articles = []
         filtered_gold_labels = []
 
         for index, article in enumerate(articles):
-            if len(article) <= articles_length_limit and len(gold_labels[index]) <= summaries_length_limit:
+            if len(article) <= Constants.MAXIMUM_SENTENCE_LENGTH:
                 filtered_articles.append(article)
                 filtered_gold_labels.append(gold_labels[index])
 
@@ -53,7 +48,7 @@ class Preprocessor:
         vectorized_articles = []
         for article in filtered_articles:
             vectorized_article = Preprocessor.calculate_sentence_embedding_by_article(
-                article, articles_length_limit, sentence_embedding
+                article, sentence_embedding
             )
             vectorized_articles.append(vectorized_article)
 
@@ -69,7 +64,7 @@ class Preprocessor:
                     ohe_label.append(np.array([0, 1]))
                 n_labels += 1
 
-            while n_labels < articles_length_limit:
+            while n_labels < Constants.MAXIMUM_SENTENCE_LENGTH:
                 ohe_label.append(np.array([1, 0]))
                 n_labels += 1
 
@@ -83,9 +78,7 @@ class Preprocessor:
     @staticmethod
     def load_indosum_data_by_sentence(
             sentence_embedding: SentenceEmbedding,
-            type: [str],
-            articles_length_limit: int = 35,
-            summaries_length_limit: int = 13
+            type: [str]
     ) -> (np.ndarray, np.ndarray):
         articles, _, gold_labels = get_articles_summaries_indices(data_types=type)
 
@@ -93,7 +86,7 @@ class Preprocessor:
         filtered_gold_labels = []
 
         for index, article in enumerate(articles):
-            if len(article) <= articles_length_limit and len(gold_labels[index]) <= summaries_length_limit:
+            if len(article) <= Constants.MAXIMUM_SENTENCE_LENGTH:
                 filtered_articles.append(article)
                 filtered_gold_labels.append(gold_labels[index])
 
@@ -119,3 +112,18 @@ class Preprocessor:
         encoded_gold_labels = np.array(encoded_gold_labels)
 
         return vectorized_sentences, encoded_gold_labels
+
+    @staticmethod
+    def preprocess_text(sentences: [str], sentence_embedding: SentenceEmbedding) -> np.ndarray:
+        if len(sentences) > Constants.MAXIMUM_SENTENCE_LENGTH:
+            sentences = sentences[:Constants.MAXIMUM_SENTENCE_LENGTH]
+
+        sentences_vectors = []
+        sentences_vector = Preprocessor.calculate_sentence_embedding_by_article(
+            sentences, sentence_embedding
+        )
+
+        sentences_vectors.append(sentences_vector)
+        sentences_vectors = np.array(sentences_vectors)
+
+        return sentences_vectors
