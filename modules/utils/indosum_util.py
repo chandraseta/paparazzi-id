@@ -135,10 +135,15 @@ def get_indices(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
     return summaries_indices
 
 
-def get_gold_labels_length(indosum_filepath: str = Constants.INDOSUM_FILEPATH):
-    filepaths = glob.glob(indosum_filepath + '*' + Constants.INDOSUM_EXTENSION)
-    gold_labels_length = []
+def get_gold_labels_length(indosum_filepath: str = Constants.INDOSUM_FILEPATH, data_types: [str] = None):
+    if data_types is None:
+        data_types = ['train', 'dev', 'test']
 
+    filepaths = []
+    for data_type in data_types:
+        filepaths.extend(glob.glob(indosum_filepath + data_type + '*' + Constants.INDOSUM_EXTENSION))
+
+    gold_labels_length = []
     for filepath in filepaths:
         file = open(filepath, 'r')
 
@@ -240,3 +245,4 @@ def get_articles_summaries_indices(
             summaries_indices.append(indices)
 
     return articles, summaries, summaries_indices
+
