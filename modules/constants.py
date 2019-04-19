@@ -1,8 +1,12 @@
 class Constants:
+    CHARACTER_LIST_FILEPATH = 'data/scraped/name_list.txt'
+
     INDOSUM_FILEPATH = 'data/indosum/'
     INDOSUM_EXTENSION = '.jsonl'
 
+    MAXIMUM_SENTENCE_LENGTH = 35
     MODEL_PATH = 'models/'
+    MODEL_THRESHOLD = 0.3
 
     NO_LEADING_SPACE_SYMBOLS = [',', '.', '!', '?']
 

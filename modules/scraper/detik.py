@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import quote
 
+from modules.constants import Constants
 from modules.utils.text_util import split_to_sentences
 
 
@@ -41,10 +42,11 @@ class Detik:
             links = []
             page = 1
             out_of_news = False
-            print('Begin crawling for {} from detik.com'.format(character_name))
+            print('[CRAWL] Begin crawling for {} from detik.com'.format(character_name))
 
+            n_article = 0
+            print('[CRAWL] Article count: 0', end='\r')
             while len(links) < limit and not out_of_news:
-                print('Current page: {}'.format(page))
                 url = 'https://www.detik.com/search/searchnews?query=' + quote(character_name) +'&page=' + str(page)
                 request = requests.get(url)
 
@@ -56,6 +58,8 @@ class Detik:
                 if len(articles) > 0:
                     for article in articles:
                         links.append(article.find('a')['href'])
+                        n_article += 1
+                        print('[CRAWL] Article count: {}'.format(n_article), end='\r')
                         if len(links) >= limit:
                             break
                 else:
@@ -69,7 +73,7 @@ class Detik:
             for link in links:
                 outfile.write(link + '\n')
 
-            print('Got {} articles for {}'.format(len(links), character_name))
+            print('[CRAWL] Got {} articles for {}'.format(len(links), character_name))
 
     @staticmethod
     def clean_links(character_names: [str] = None):
@@ -96,7 +100,7 @@ class Detik:
                 if link != '\n':
                     linkfile.write(link)
 
-            print('Removed {} duplicate links from {}'.format(len(links) - len(unique_link), character_name))
+            print('[CRAWL] Removed {} duplicate links from {}'.format(len(links) - len(unique_link), character_name))
 
     @staticmethod
     def crawl_links(character_names: [str] = None):
@@ -129,7 +133,7 @@ class Detik:
             crawledlinkfile = open(crawledlinkfilepath, 'a+')
             datafile = open(datafilepath, 'a+')
 
-            print('Processing data for {}'.format(character_name))
+            print('[CRAWL] Processing data for {}'.format(character_name), end='\r')
 
             for url in uncrawled_links:
                 dict = {}
@@ -143,7 +147,11 @@ class Detik:
                 titles = soup.find_all('title')
                 body_text = soup.find_all('div', class_='itp_bodycontent')
 
-                dict['title'] = titles[0].text
+                if len(titles) > 0:
+                    dict['title'] = titles[0].text
+                else:
+                    print('\tNo title found in: {}'.format(url))
+                    dict['title'] = '-'
 
                 sentences = []
 
@@ -170,18 +178,18 @@ class Detik:
                 crawledlinkfile.write(url)
                 datafile.write(json.dumps(dict) + '\n')
 
-            print('Finished processing data for {}'.format(character_name))
+            print('[CRAWL] Finished processing data for {}'.format(character_name))
 
 
 if __name__ == '__main__':
     names = []
 
-    namefile = open('data/scraped/name_list.txt', 'r')
+    namefile = open(Constants.CHARACTER_LIST_FILEPATH, 'r')
 
     for line in namefile:
         if line != '\n':
             names.append(line.strip('\n'))
-    #
+
     Detik.get_links(names)
     Detik.clean_links()
     Detik.crawl_links()
