@@ -9,7 +9,9 @@ from modules.utils.text_util import load_stopwords
 class SentenceEmbedding:
 
     def __init__(self):
+        print('[SE] Loading sentence embedding')
         self._word_embedding = WordEmbedding(Constants.WORD_EMBEDDING_FILEPATH)
+        print('[SE] Finished loading sentence embedding')
 
     def calculate_vector_avg(
             self,
@@ -31,6 +33,26 @@ class SentenceEmbedding:
 
         if n_token > 0:
             sentence_vector = sentence_vector / float(n_token)
+        return sentence_vector
+
+    def calculate_vector(
+            self,
+            sentence: str,
+            remove_stopwords: bool = True
+    ) -> np.ndarray:
+        sentence_tokens = gensim.utils.simple_preprocess(sentence)
+        sentence_vector = np.zeros((self._word_embedding.dimension,))
+        n_token = 0
+
+        stopwords = []
+        if remove_stopwords:
+            stopwords = load_stopwords()
+
+        for token in sentence_tokens:
+            if len(token) != 0 and token not in stopwords:
+                sentence_vector += self._word_embedding.word2vec(token)
+                n_token += 1
+
         return sentence_vector
 
     def calculate_vector_flatten(
