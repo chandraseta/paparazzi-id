@@ -1,5 +1,10 @@
 class Constants:
+    DETIK_DATA_FILEPATH = 'data/scraped/detik/'
     CHARACTER_LIST_FILEPATH = 'data/scraped/name_list.txt'
+
+    SCRAPED_DATA_URL = 'url'
+    SCRAPED_DATA_TITLE = 'title'
+    SCRAPED_DATA_SENTENCES = 'sentences'
 
     INDOSUM_FILEPATH = 'data/indosum/'
     INDOSUM_EXTENSION = '.jsonl'

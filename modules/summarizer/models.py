@@ -18,6 +18,7 @@ from modules.utils.text_util import split_to_sentences
 class BaseModel(ABC):
     def __init__(self):
         self._model = None
+        print('[SUMMARIZER] Initializing Model')
 
     def train(self, x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np.ndarray, log_path: str):
         history = self._model.fit(
@@ -50,16 +51,11 @@ class BaseModel(ABC):
         if n_sentence > 0:
             n = 0
             index_confidence_list.sort(key=lambda x: x[1], reverse=True)
-            print(index_confidence_list)
             while n < n_sentence:
                 if index_confidence_list[n][0] <= last_sentence_idx:
                     selected_indices.append(index_confidence_list[n][0])
                     n += 1
                 else:
-                    print('WARNING')
-                    print(index_confidence_list[n][0])
-                    print(index_confidence_list[n][1])
-                    print()
                     n += 1
                     n_sentence += 1
             selected_indices.sort()
@@ -82,10 +78,11 @@ class BaseModel(ABC):
 
     def save(self, model_name: str):
         self._model.save(Constants.MODEL_PATH + '{}.h5'.format(model_name))
-        print('Model saved to {}'.format(Constants.MODEL_PATH + '{}.h5'.format(model_name)))
+        print('[SUMMARIZER] Model saved to {}'.format(Constants.MODEL_PATH + '{}.h5'.format(model_name)))
 
     def load(self, model_name: str):
         self._model = load_model(Constants.MODEL_PATH + '{}.h5'.format(model_name), custom_objects={'precision': precision, 'recall': recall, 'f1': f1})
+        print('[SUMMARIZER] Model {} loaded'.format(model_name))
 
 
 class FFNNModel(BaseModel):

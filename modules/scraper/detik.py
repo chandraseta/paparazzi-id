@@ -8,34 +8,11 @@ from urllib.parse import quote
 
 from modules.constants import Constants
 from modules.utils.text_util import split_to_sentences
+from modules.utils.scraped_data_util import generate_link_filename
+from modules.utils.scraped_data_util import generate_crawled_link_filename, generate_data_filename
 
 
 class Detik:
-    LINK_DATA_FILEPATH = 'data/scraped/detik/'
-
-    n_link_new = 0
-    n_link_deleted = 0
-
-    @staticmethod
-    def generate_filepath(character_name: str) -> str:
-        new_filepath = Detik.LINK_DATA_FILEPATH + character_name.lower()
-        if not os.path.exists(new_filepath):
-            os.mkdir(new_filepath)
-            print('New directory created {}'.format(new_filepath))
-        return new_filepath + '/'
-
-    @staticmethod
-    def generate_link_filename(character_name: str) -> str:
-        return Detik.generate_filepath(character_name) + 'links.txt'
-
-    @staticmethod
-    def generate_crawled_link_filename(character_name: str) -> str:
-        return Detik.generate_filepath(character_name) + 'crawled_links.txt'
-
-    @staticmethod
-    def generate_jsonl_filename(character_name: str) -> str:
-        return Detik.generate_filepath(character_name) + 'data.jsonl'
-
     @staticmethod
     def get_links(character_names: [str], limit: int = 50):
         for character_name in character_names:
@@ -67,7 +44,7 @@ class Detik:
 
                 page += 1
 
-            outfilepath = Detik.generate_link_filename(character_name)
+            outfilepath = generate_link_filename(character_name)
 
             outfile = open(outfilepath, 'a+')
             for link in links:
@@ -78,10 +55,10 @@ class Detik:
     @staticmethod
     def clean_links(character_names: [str] = None):
         if character_names is None:
-            character_names = [name for name in os.listdir(Detik.LINK_DATA_FILEPATH)]
+            character_names = [name for name in os.listdir(Constants.DETIK_DATA_FILEPATH)]
 
         for character_name in character_names:
-            linkfilepath = Detik.generate_link_filename(character_name)
+            linkfilepath = generate_link_filename(character_name)
 
             links = []
             linkfile = open(linkfilepath, 'r')
@@ -105,12 +82,12 @@ class Detik:
     @staticmethod
     def crawl_links(character_names: [str] = None):
         if character_names is None:
-            character_names = [name for name in os.listdir(Detik.LINK_DATA_FILEPATH)]
+            character_names = [name for name in os.listdir(Constants.DETIK_DATA_FILEPATH)]
 
         for character_name in character_names:
-            crawledlinkfilepath = Detik.generate_crawled_link_filename(character_name)
-            linkfilepath = Detik.generate_link_filename(character_name)
-            datafilepath = Detik.generate_jsonl_filename(character_name)
+            crawledlinkfilepath = generate_crawled_link_filename(character_name)
+            linkfilepath = generate_link_filename(character_name)
+            datafilepath = generate_data_filename(character_name)
 
             crawled_links = []
 
@@ -148,10 +125,10 @@ class Detik:
                 body_text = soup.find_all('div', class_='itp_bodycontent')
 
                 if len(titles) > 0:
-                    dict['title'] = titles[0].text
+                    dict[Constants.SCRAPED_DATA_TITLE] = titles[0].text
                 else:
                     print('\tNo title found in: {}'.format(url))
-                    dict['title'] = '-'
+                    dict[Constants.SCRAPED_DATA_TITLE] = '-'
 
                 sentences = []
 
@@ -173,7 +150,7 @@ class Detik:
                         if not ('baca juga' in sentence.lower() or 'simak juga' in sentence.lower()):
                             sentences.append(sentence.strip())
 
-                dict['sentences'] = sentences
+                dict[Constants.SCRAPED_DATA_SENTENCES] = sentences
 
                 crawledlinkfile.write(url)
                 datafile.write(json.dumps(dict) + '\n')
