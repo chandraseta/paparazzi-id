@@ -181,9 +181,7 @@ if __name__=='__main__':
     any_model_selected = args.ffnn or args.gru or args.lstm or args.bigru or args.bilstm
 
     if any_mode_selected and any_model_selected:
-        print('[INIT] Loading sentence embedding')
         sentence_embedding = SentenceEmbedding()
-        print('[INIT] Finished loading sentence embedding')
 
         if args.train:
             train_data_type = ['train.' + args.data]
@@ -236,19 +234,19 @@ if __name__=='__main__':
 
                 if args.gru:
                     print('[FULL TRAIN] GRU Model')
-                    train_gru_model(full_train_seq_sentences, full_train_seq_labels, dev_seq_sentences, dev_seq_labels)
+                    train_gru_model(full_train_seq_sentences, full_train_seq_labels, dev_seq_sentences, dev_seq_labels, args.version)
 
                 if args.lstm:
                     print('[FULL TRAIN] LSTM Model')
-                    train_lstm_model(full_train_seq_sentences, full_train_seq_labels, dev_seq_sentences, dev_seq_labels)
+                    train_lstm_model(full_train_seq_sentences, full_train_seq_labels, dev_seq_sentences, dev_seq_labels, args.version)
 
                 if args.bigru:
                     print('[FULL TRAIN] BiGRU Model')
-                    train_bigru_model(full_train_seq_sentences, full_train_seq_labels, dev_seq_sentences, dev_seq_labels)
+                    train_bigru_model(full_train_seq_sentences, full_train_seq_labels, dev_seq_sentences, dev_seq_labels, args.version)
 
                 if args.bilstm:
                     print('[FULL TRAIN] BiLSTM Model')
-                    train_bilstm_model(full_train_seq_sentences, full_train_seq_labels, dev_seq_sentences, dev_seq_labels)
+                    train_bilstm_model(full_train_seq_sentences, full_train_seq_labels, dev_seq_sentences, dev_seq_labels, args.version)
 
         if args.test:
             test_data_type = ['test.' + args.data]
