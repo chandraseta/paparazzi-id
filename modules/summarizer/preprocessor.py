@@ -3,7 +3,6 @@ import numpy as np
 from modules.constants import Constants
 from modules.sentence_embedding import SentenceEmbedding
 from modules.utils.indosum_util import get_articles_summaries_indices
-from modules.utils.text_util import split_to_sentences
 
 
 class Preprocessor:
