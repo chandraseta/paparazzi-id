@@ -5,14 +5,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 from modules.constants import Constants
 from modules.utils.text_util import split_to_sentences
-from modules.sentence_embedding import SentenceEmbedding
+from modules.word_embedding import WordEmbedding
 
 
 class BasicSummarizer:
     # TODO: Find out about multi-document summarization
 
-    def __init__(self, sentence_embedding: SentenceEmbedding):
-        self._sentence_embedding = sentence_embedding
+    def __init__(self, word_embedding: WordEmbedding):
+        self._word_embedding = word_embedding
 
     def textrank_avg(self, text, n_sentence: int = 4, is_tokenized_sent: bool = False) -> ([int], str):
         sentences = text
@@ -22,7 +22,7 @@ class BasicSummarizer:
         sentence_vectors = []
 
         for sentence in sentences:
-            sentence_vectors.append(self._sentence_embedding.calculate_vector_avg(sentence))
+            sentence_vectors.append(self._word_embedding.calculate_vector_avg(sentence))
 
         similarity_matrix = np.zeros([len(sentences), len(sentences)])
 
@@ -64,7 +64,7 @@ class BasicSummarizer:
         max_sentence_length = 0
 
         for sentence in sentences:
-            sentence_vectors.append(self._sentence_embedding.calculate_vector_flatten(sentence, 40))
+            sentence_vectors.append(self._word_embedding.calculate_vector_flatten(sentence, 40))
             max_sentence_length = max(max_sentence_length, len(sentence.split()))
 
         if max_length == 0:

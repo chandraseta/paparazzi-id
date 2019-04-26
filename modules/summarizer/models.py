@@ -9,7 +9,7 @@ from keras.models import Model
 from keras.models import load_model
 
 from modules.constants import Constants
-from modules.sentence_embedding import SentenceEmbedding
+from modules.word_embedding import WordEmbedding
 from modules.summarizer.metrics import precision, recall, f1
 from modules.summarizer.preprocessor import Preprocessor
 from modules.utils.text_util import split_to_sentences
@@ -33,11 +33,11 @@ class BaseModel(ABC):
     def predict(self, x: np.ndarray) -> np.ndarray:
         return self._model.predict(x)
 
-    def summarize(self, text: str, sentence_embedding: SentenceEmbedding, n_sentence: int = 0) -> str:
+    def summarize(self, text: str, word_embedding: WordEmbedding, n_sentence: int = 0) -> str:
         sentences = split_to_sentences(text)
         last_sentence_idx = len(sentences) - 1
 
-        sentences_vector = Preprocessor.preprocess_text(sentences, sentence_embedding)
+        sentences_vector = Preprocessor.preprocess_text(sentences, word_embedding)
         model_predictions = self.predict(sentences_vector)
 
         predictions = model_predictions[0]

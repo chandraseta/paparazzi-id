@@ -1,28 +1,28 @@
 import numpy as np
 
 from modules.constants import Constants
-from modules.sentence_embedding import SentenceEmbedding
+from modules.word_embedding import WordEmbedding
 from modules.utils.indosum_util import get_articles_summaries_indices
 
 
 class Preprocessor:
 
     @staticmethod
-    def calculate_sentence_embedding(
+    def calculate_sentence_vector(
             sentence: str,
-            sentence_embedding: SentenceEmbedding
+            word_embedding: WordEmbedding
     ) -> np.ndarray:
-        return sentence_embedding.calculate_vector_avg(sentence)
+        return word_embedding.calculate_vector_avg(sentence)
 
     @staticmethod
-    def calculate_sentence_embedding_by_article(
+    def calculate_sentence_vectors_by_article(
             sentences: [str],
-            sentence_embedding: SentenceEmbedding
+            word_embedding: WordEmbedding
     ) -> [np.ndarray]:
         sentence_vectors = []
         n_sentence = 0
         for sentence in sentences:
-            sentence_vectors.append(sentence_embedding.calculate_vector_avg(sentence))
+            sentence_vectors.append(word_embedding.calculate_vector_avg(sentence))
             n_sentence += 1
 
         while n_sentence < Constants.MAXIMUM_SENTENCE_LENGTH:
@@ -32,8 +32,8 @@ class Preprocessor:
         return sentence_vectors
 
     @staticmethod
-    def load_indosum_data(sentence_embedding: SentenceEmbedding, type: [str]) -> ([str], [[np.array]]):
-        articles, _, gold_labels = get_articles_summaries_indices(data_types=type)
+    def load_indosum_data(word_embedding: WordEmbedding, data_type: [str]) -> ([str], [[np.array]]):
+        articles, _, gold_labels = get_articles_summaries_indices(data_types=data_type)
 
         filtered_articles = []
         filtered_gold_labels = []
@@ -46,8 +46,8 @@ class Preprocessor:
         # Calculate sentence vector and add padding
         vectorized_articles = []
         for article in filtered_articles:
-            vectorized_article = Preprocessor.calculate_sentence_embedding_by_article(
-                article, sentence_embedding
+            vectorized_article = Preprocessor.calculate_sentence_vectors_by_article(
+                article, word_embedding
             )
             vectorized_articles.append(vectorized_article)
 
@@ -76,7 +76,7 @@ class Preprocessor:
 
     @staticmethod
     def load_indosum_data_by_sentence(
-            sentence_embedding: SentenceEmbedding,
+            word_embedding: WordEmbedding,
             type: [str]
     ) -> (np.ndarray, np.ndarray):
         articles, _, gold_labels = get_articles_summaries_indices(data_types=type)
@@ -93,8 +93,8 @@ class Preprocessor:
         vectorized_sentences = []
         for article in filtered_articles:
             for sentence in article:
-                vectorized_sentence = Preprocessor.calculate_sentence_embedding(
-                    sentence, sentence_embedding
+                vectorized_sentence = Preprocessor.calculate_sentence_vector(
+                    sentence, word_embedding
                 )
                 vectorized_sentences.append(vectorized_sentence)
 
@@ -113,13 +113,13 @@ class Preprocessor:
         return vectorized_sentences, encoded_gold_labels
 
     @staticmethod
-    def preprocess_text(sentences: [str], sentence_embedding: SentenceEmbedding) -> np.ndarray:
+    def preprocess_text(sentences: [str], word_embedding: WordEmbedding) -> np.ndarray:
         if len(sentences) > Constants.MAXIMUM_SENTENCE_LENGTH:
             sentences = sentences[:Constants.MAXIMUM_SENTENCE_LENGTH]
 
         sentences_vectors = []
-        sentences_vector = Preprocessor.calculate_sentence_embedding_by_article(
-            sentences, sentence_embedding
+        sentences_vector = Preprocessor.calculate_sentence_vectors_by_article(
+            sentences, word_embedding
         )
 
         sentences_vectors.append(sentences_vector)

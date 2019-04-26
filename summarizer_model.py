@@ -1,7 +1,7 @@
 import argparse
 import numpy as np
 
-from modules.sentence_embedding import SentenceEmbedding
+from modules.word_embedding import WordEmbedding
 from modules.summarizer.preprocessor import Preprocessor
 from modules.summarizer.models import FFNNModel, GRUModel, LSTMModel
 from modules.summarizer.models import BiGRUModel, BiLSTMModel
@@ -181,7 +181,7 @@ if __name__=='__main__':
     any_model_selected = args.ffnn or args.gru or args.lstm or args.bigru or args.bilstm
 
     if any_mode_selected and any_model_selected:
-        sentence_embedding = SentenceEmbedding()
+        w2v = WordEmbedding()
 
         if args.train:
             train_data_type = ['train.' + args.data]
@@ -189,8 +189,8 @@ if __name__=='__main__':
 
             if args.ffnn:
                 print('[TRAIN] Loading data for dataset {}'.format(args.data))
-                train_sentences, train_labels = Preprocessor.load_indosum_data_by_sentence(sentence_embedding, type=train_data_type)
-                val_sentences, val_labels = Preprocessor.load_indosum_data_by_sentence(sentence_embedding, type=val_data_type)
+                train_sentences, train_labels = Preprocessor.load_indosum_data_by_sentence(w2v, type=train_data_type)
+                val_sentences, val_labels = Preprocessor.load_indosum_data_by_sentence(w2v, type=val_data_type)
                 print('[TRAIN] Finished loading data')
 
                 print('[TRAIN] FFNN Model')
@@ -198,8 +198,8 @@ if __name__=='__main__':
 
             if args.gru or args.lstm or args.bigru or args.bilstm:
                 print('[TRAIN] Loading sequence data for dataset {}'.format(args.data))
-                train_seq_sentences, train_seq_labels = Preprocessor.load_indosum_data(sentence_embedding, type=train_data_type)
-                val_seq_sentences, val_seq_labels = Preprocessor.load_indosum_data(sentence_embedding, type=val_data_type)
+                train_seq_sentences, train_seq_labels = Preprocessor.load_indosum_data(w2v, data_type=train_data_type)
+                val_seq_sentences, val_seq_labels = Preprocessor.load_indosum_data(w2v, data_type=val_data_type)
                 print('[TRAIN] Finished loading sequence data')
 
                 if args.gru:
@@ -223,13 +223,13 @@ if __name__=='__main__':
 
             if args.ffnn:
                 print('[FULL TRAIN] Loading data for dataset {}'.format(args.data))
-                full_train_sentences, full_train_labels = Preprocessor.load_indosum_data_by_sentence(sentence_embedding, type=full_train_data_type)
+                full_train_sentences, full_train_labels = Preprocessor.load_indosum_data_by_sentence(w2v, type=full_train_data_type)
                 print('[FULL TRAIN] Finished loading data')
 
             if args.gru or args.lstm or args.bigru or args.bilstm:
                 print('[FULL TRAIN] Loading sequence data for dataset {}'.format(args.data))
-                full_train_seq_sentences, full_train_seq_labels = Preprocessor.load_indosum_data(sentence_embedding, type=full_train_data_type)
-                dev_seq_sentences, dev_seq_labels = Preprocessor.load_indosum_data(sentence_embedding, type=['dev' + args.data])
+                full_train_seq_sentences, full_train_seq_labels = Preprocessor.load_indosum_data(w2v, data_type=full_train_data_type)
+                dev_seq_sentences, dev_seq_labels = Preprocessor.load_indosum_data(w2v, data_type=['dev' + args.data])
                 print('[FULL TRAIN] Finished loading sequence data')
 
                 if args.gru:
@@ -253,7 +253,7 @@ if __name__=='__main__':
 
             if args.ffnn:
                 print('[TEST] Loading data for dataset {}'.format(args.data))
-                test_sentences, test_labels = Preprocessor.load_indosum_data_by_sentence(sentence_embedding, type=test_data_type)
+                test_sentences, test_labels = Preprocessor.load_indosum_data_by_sentence(w2v, type=test_data_type)
                 print('[TEST] Finished loading data')
 
                 print('[TEST] FFNN Model')
@@ -261,7 +261,7 @@ if __name__=='__main__':
 
             if args.gru or args.lstm or args.bigru or args.bilstm:
                 print('[TEST] Loading sequence data for dataset {}'.format(args.data))
-                test_seq_sentences, test_seq_labels = Preprocessor.load_indosum_data(sentence_embedding, type=test_data_type)
+                test_seq_sentences, test_seq_labels = Preprocessor.load_indosum_data(w2v, data_type=test_data_type)
                 print('[TEST] Finished loading sequence data')
 
                 if args.gru:
