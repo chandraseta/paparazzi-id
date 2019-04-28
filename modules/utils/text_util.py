@@ -22,6 +22,8 @@ def split_to_sentences(text: str) -> [str]:
     temp_sentence = ''
     return_sentences = []
 
+    print('FirstSent: {}'.format(sentences))
+
     for idx, sentence in enumerate(sentences):
         sentence = sentence.strip()
 
@@ -58,5 +60,13 @@ def split_to_sentences(text: str) -> [str]:
                     return_sentences.append(temp_sentence)
 
                 temp_sentence = ''
+
+    if len(temp_sentence) >= 20:
+        # Remove multiple periods
+        temp_sentence = re.sub('\.+$', '.', temp_sentence)
+
+        # Remove multiple whitespaces
+        temp_sentence = re.sub('\s+', ' ', temp_sentence).strip()
+        return_sentences.append(temp_sentence)
 
     return return_sentences
