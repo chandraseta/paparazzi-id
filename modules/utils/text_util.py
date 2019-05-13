@@ -22,8 +22,6 @@ def split_to_sentences(text: str) -> [str]:
     temp_sentence = ''
     return_sentences = []
 
-    print('FirstSent: {}'.format(sentences))
-
     for idx, sentence in enumerate(sentences):
         sentence = sentence.strip()
 
@@ -70,3 +68,15 @@ def split_to_sentences(text: str) -> [str]:
         return_sentences.append(temp_sentence)
 
     return return_sentences
+
+
+def check_entity(sentences: [str], character_name: str) -> bool:
+    is_exist = False
+    possible_names = character_name.split()
+
+    for sentence in sentences:
+        if any(possible_name.lower() in sentence.lower() for possible_name in possible_names):
+            is_exist = True
+            break
+
+    return is_exist

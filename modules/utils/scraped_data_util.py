@@ -5,7 +5,7 @@ from modules.constants import Constants
 
 
 def generate_filepath(character_name: str) -> str:
-    new_filepath = Constants.DETIK_DATA_FILEPATH + character_name.lower()
+    new_filepath = Constants.DETIK_DATA_FILEPATH + character_name
     if not os.path.exists(new_filepath):
         os.mkdir(new_filepath)
         print('[UTIL] New directory created {}'.format(new_filepath))
@@ -29,6 +29,7 @@ def generate_used_data_filename(character_name: str) -> str:
 
 
 def get_scraped_data(name: str, include_used_data: bool = False):
+    print('[UTIL] Getting news articles for {}'.format(name))
     data_filepath = generate_data_filename(name)
     used_data_filepath = generate_data_filename(name)
 

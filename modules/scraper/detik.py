@@ -153,7 +153,9 @@ class Detik:
                 dict[Constants.SCRAPED_DATA_SENTENCES] = sentences
 
                 crawledlinkfile.write(url)
-                datafile.write(json.dumps(dict) + '\n')
+
+                if len(dict[Constants.SCRAPED_DATA_SENTENCES]) > 0:
+                    datafile.write(json.dumps(dict) + '\n')
 
             print('[CRAWL] Finished processing data for {}'.format(character_name))
 

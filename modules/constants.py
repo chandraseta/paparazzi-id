@@ -1,5 +1,6 @@
 class Constants:
     DETIK_DATA_FILEPATH = 'data/scraped/detik/'
+    WIKIPEDIA_DATA_FILEPATH = 'data/scraped/wikipedia/'
     CHARACTER_LIST_FILEPATH = 'data/scraped/name_list.txt'
 
     SCRAPED_DATA_URL = 'url'
@@ -8,6 +9,8 @@ class Constants:
 
     INDOSUM_FILEPATH = 'data/indosum/'
     INDOSUM_EXTENSION = '.jsonl'
+
+    HTML_EXTENSION = '.html'
 
     INITIAL_WIKI_SECTION = 'Lead paragraph'
 

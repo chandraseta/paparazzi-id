@@ -33,8 +33,7 @@ class BaseModel(ABC):
     def predict(self, x: np.ndarray) -> np.ndarray:
         return self._model.predict(x)
 
-    def summarize(self, text: str, word_embedding: WordEmbedding, n_sentence: int = 0) -> str:
-        sentences = split_to_sentences(text)
+    def summarize(self, sentences: [str], word_embedding: WordEmbedding, n_sentence: int = 0) -> [str]:
         last_sentence_idx = len(sentences) - 1
 
         sentences_vector = Preprocessor.preprocess_text(sentences, word_embedding)
@@ -64,12 +63,10 @@ class BaseModel(ABC):
                 if confidence > Constants.MODEL_THRESHOLD and idx < last_sentence_idx:
                     selected_indices.append(idx)
 
-        summary = ''
-
+        summary = []
         for selected_index in selected_indices:
-            summary += sentences[selected_index] + ' '
+            summary.append(sentences[selected_index])
 
-        summary = summary.strip()
         return summary
 
     def evaluate(self, x_test: np.ndarray, y_test: np.ndarray) -> (float, float, float):
@@ -99,6 +96,36 @@ class FFNNModel(BaseModel):
         drpout_2 = Dropout(0.5)(actvfn_2)
 
         predictions = Dense(2, activation='softmax')(drpout_2)
+
+        self._model = Model(inputs=inputs, outputs=predictions)
+        self._model.summary()
+
+        self._model.compile(
+            optimizer='adam',
+            loss='categorical_crossentropy',
+            metrics=['accuracy', precision, recall, f1]
+        )
+
+
+class FFNNSeq(BaseModel):
+    def __init__(self):
+        super().__init__()
+        inputs = Input(shape=(Constants.MAXIMUM_SENTENCE_LENGTH, Constants.WORD_EMBEDDING_DIMENSION,))
+
+        input_dropout = Dropout(0.5)(inputs)
+
+        hidden_1 = Dense(256)(input_dropout)
+        actvfn_1 = LeakyReLU(alpha=0.1)(hidden_1)
+        drpout_1 = Dropout(0.5)(actvfn_1)
+
+        hidden_2 = Dense(128)(drpout_1)
+        actvfn_2 = LeakyReLU(alpha=0.1)(hidden_2)
+        drpout_2 = Dropout(0.5)(actvfn_2)
+
+        predictions = TimeDistributed(Dense(
+            2,
+            activation='softmax'
+        ))(actvfn_2)
 
         self._model = Model(inputs=inputs, outputs=predictions)
         self._model.summary()

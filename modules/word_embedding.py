@@ -68,6 +68,31 @@ class WordEmbedding:
 
         return sentence_vector
 
+    def calculate_paragraph_vector_avg(
+            self,
+            paragraph: [str],
+            remove_stopwords: bool = True
+    ) -> np.ndarray:
+        paragraph_vector = np.zeros((self.dimension,))
+        n_token = 0
+
+        stopwords = []
+        if remove_stopwords:
+            stopwords = load_stopwords()
+
+        for sentence in paragraph:
+            sentence_tokens = gensim.utils.simple_preprocess(sentence)
+
+            for token in sentence_tokens:
+                if len(token) != 0 and token not in stopwords:
+                    paragraph_vector += self.word2vec(token)
+                    n_token += 1
+
+        if n_token > 0:
+            paragraph_vector = paragraph_vector / float(n_token)
+
+        return paragraph_vector
+
     def calculate_vector(
             self,
             sentence: str,
