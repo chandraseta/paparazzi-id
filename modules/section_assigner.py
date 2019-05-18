@@ -2,6 +2,7 @@ from sklearn.metrics.pairwise import pairwise_distances
 
 from modules.word_embedding import WordEmbedding
 from modules.utils.text_util import split_to_sentences
+from modules.similarity_checker import SimilarityChecker
 
 
 class SectionAssigner:
@@ -33,3 +34,26 @@ class SectionAssigner:
                     nearest_distance = current_distance
 
         return nearest_section, nearest_distance
+
+    @staticmethod
+    def assign_section_cosine(sentences: [str], wikipedia: dict, word_embedding: WordEmbedding) -> (str, int):
+        most_similar_section = None
+        highest_similarity = None
+
+        for section, content in wikipedia.items():
+            wiki_paragraph = split_to_sentences(content)
+
+            if most_similar_section is None or highest_similarity is None:
+                most_similar_section = section
+                highest_similarity = SimilarityChecker.calculate_paragraph_similarity(
+                    sentences, wiki_paragraph, word_embedding
+                )
+            else:
+                current_similarity = SimilarityChecker.calculate_paragraph_similarity(
+                    sentences, wiki_paragraph, word_embedding
+                )
+                if current_similarity > highest_similarity:
+                    most_similar_section = section
+                    highest_similarity = current_similarity
+
+        return most_similar_section, highest_similarity
