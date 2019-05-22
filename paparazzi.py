@@ -1,16 +1,16 @@
 import argparse
 import difflib
 import os
-import random
 
 from modules.constants import Constants
 from modules.scraper.detik import Detik
 from modules.scraper.wikipedia import Wikipedia
-from modules.word_embedding import WordEmbedding
 from modules.summarizer.models import BiGRUModel
+from modules.section_assigner import SectionAssigner
+from modules.similarity_checker import SimilarityChecker
+from modules.word_embedding import WordEmbedding
 from modules.utils.scraped_data_util import get_scraped_data
 from modules.utils.text_util import check_entity
-from modules.section_assigner import SectionAssigner
 
 
 def get_optimized_parameters(in_name: str, in_should_crawl: bool) -> (str, bool):
@@ -88,8 +88,13 @@ if __name__ == '__main__':
 
         scraped_data = get_scraped_data(name)
 
-        # Debug
-        scraped_data = random.sample(scraped_data, k=10)
+        print('===')
+        for section, content in wiki_data.items():
+            print(section)
+            print('-----')
+            print(content)
+        print('===')
+
         list_news_sentences = []
 
         for data in scraped_data:
@@ -99,13 +104,26 @@ if __name__ == '__main__':
         for news_sentences in list_news_sentences:
             list_summarized_data.append(summarizer_model.summarize(news_sentences, word_embedding))
 
+        list_filtered_data = []
+
         for index, summary in enumerate(list_summarized_data):
             if len(summary) > 0:
                 if check_entity(summary, name):
-                    section, dist = SectionAssigner.assign_section(summary, wiki_data, word_embedding)
-                    print('---')
+                    list_filtered_data.append(summary)
+                    nearest_section, dist = SectionAssigner.assign_section(summary, wiki_data, word_embedding)
+                    similar_section, sim = SectionAssigner.assign_section_cosine(summary, wiki_data, word_embedding)
+
+                    print('===')
                     print(list_news_sentences[index])
                     print()
                     print(summary)
                     print()
-                    print('Assigned Section: {}'.format(section))
+                    print('Nearest Section: {} - {}'.format(nearest_section, dist))
+                    print('Most Similar Section: {} - {}'.format(similar_section, sim))
+
+        similar_pair_details = SimilarityChecker.get_similar_summaries_indices_pair(list_filtered_data, word_embedding)
+        print("Similar Pairs")
+        print(similar_pair_details)
+        print("===")
+        print()
+

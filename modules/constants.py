@@ -18,7 +18,10 @@ class Constants:
     MODEL_PATH = 'models/'
     MODEL_THRESHOLD = 0.3
 
+    SIMILARITY_THRESHOLD = 0.8
+
     NO_LEADING_SPACE_SYMBOLS = [',', '.', '!', '?']
+    IGNORED_WIKIPEDIA_SECTIONS = ['referensi', 'pranala luar', 'lihat pula', 'daftar pustaka', 'catatan kaki']
 
     STOPWORDS_ID_FILEPATH = 'data/indo_stopwords.txt'
 

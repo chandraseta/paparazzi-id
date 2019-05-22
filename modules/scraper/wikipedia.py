@@ -55,9 +55,7 @@ class Wikipedia:
                     if filtered_item.find('span', {'class': 'mw-headline'}):
                         # Skip empty sections
                         if len(current_section_content) > 0 \
-                                and current_section.lower() != 'referensi' \
-                                and current_section.lower() != 'pranala luar'\
-                                and current_section.lower() != 'lihat pula':
+                                and current_section.lower() not in Constants.IGNORED_WIKIPEDIA_SECTIONS:
                             current_section_content = re.sub('\s+', ' ', current_section_content).strip()
                             result[current_section] = current_section_content
                             current_section_content = ''
@@ -68,9 +66,7 @@ class Wikipedia:
 
             if current_section not in result \
                     and len(current_section_content) > 0 \
-                    and current_section.lower() != 'referensi' \
-                    and current_section.lower() != 'pranala luar' \
-                    and current_section.lower() != 'lihat pula':
+                    and current_section.lower() not in Constants.IGNORED_WIKIPEDIA_SECTIONS:
                 current_section_content = re.sub('\s+', ' ', current_section_content).strip()
                 result[current_section] = current_section_content
 
