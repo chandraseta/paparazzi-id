@@ -70,13 +70,23 @@ def split_to_sentences(text: str) -> [str]:
     return return_sentences
 
 
+def join_sentences(sentences: [str]) -> str:
+    text = ''
+    for sentence in sentences:
+        text += sentence + ' '
+
+    text = text.strip()
+
+    return text
+
+
 def check_entity(sentences: [str], character_name: str) -> bool:
     is_exist = False
     possible_names = character_name.split()
 
-    for sentence in sentences:
-        if any(possible_name.lower() in sentence.lower() for possible_name in possible_names):
-            is_exist = True
-            break
+    first_sentence = sentences[0]
+
+    if any(possible_name.lower() in first_sentence.lower() for possible_name in possible_names):
+        is_exist = True
 
     return is_exist

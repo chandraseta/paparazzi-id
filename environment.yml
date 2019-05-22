@@ -14,5 +14,6 @@ dependencies:
   - pandas
   - scikit-learn
   - requests
+  - rouge
   - tensorflow
 

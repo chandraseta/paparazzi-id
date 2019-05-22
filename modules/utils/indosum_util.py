@@ -229,8 +229,8 @@ def get_articles_summaries_indices(
             for sentence in summary:
                 for sentence_token in sentence:
                     summary_tokens.append(sentence_token)
-
-            summaries.append(summary_tokens)
+            joined_summary = join_tokens(summary_tokens)
+            summaries.append(joined_summary)
 
             gold_labels = data['gold_labels']
             indices = []
