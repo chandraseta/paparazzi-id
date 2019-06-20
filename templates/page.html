@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WikiUpdate</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles/style.css') }}">
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<header class="navbar navbar-inverse">
+    <div class="container">
+        <nav class="navigation">
+            <div class="container-fluid">
+
+            </div><!-- /.container-fluid -->
+        </nav>
+    </div>
+</header>
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-3">WikiUpdate</h1>
+        <h5>Penyusun Paragraf Bahasa untuk Biografi Tokoh Berbasis Peringkasan Ekstraktf</h5>
+    </div>
+</div>
+<div class="container">
+    <form action="/submit" method="post">
+        <table class="subContainer">
+            <h4>Nama Tokoh</h4>
+            <input class="form-control" type="text" id="input_name" name="input_name">
+        </table>
+        <input class="center btn btn-primary" type="submit" value="Rekomendasi Paragraf">
+    </form>
+</div>
+
+<div>
+    {% if error is defined and error != '' %}
+        <div class="card center w-50 card-error">
+            <h5 class="card-header">Error</h5>
+            <div class="card-body">
+                {{error}}
+            </div>
+        </div>
+    {% else %}
+        {% if input is defined %}
+            <div class="card center w-50">
+                <h5 class="card-header">Nama Tokoh</h5>
+                <div class="card-body">
+                    {{input}} - id.wikipedia.org/wiki/{{wiki_link}} <a href="id.wikipedia.org/wiki/"{{wiki_link}}></a>
+                </div>
+            </div>
+
+            {% for candidate_paragraph_detail in result_list %}
+                <div class="card center w-50">
+                    <h5 class="card-header">Section: {{candidate_paragraph_detail['section']}}</h5>
+                    <div class="card-body">
+                        {{candidate_paragraph_detail['summary']}}
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% for no_entity_summary in no_entity_list %}
+                <div class="card center w-50">
+                    <h5 class="card-header card-error">Entitas Tokoh Tidak Menjadi Fokus</h5>
+                    <div class="card-body">
+                        {{no_entity_summary}}
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% for too_similar_summary in too_similar_list %}
+                <div class="card center w-50">
+                    <h5 class="card-header card-error">Hasil Ringkasan Redundan</h5>
+                    <div class="card-body">
+                        {{too_similar_summary}}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+</div>
+<br>
+</body>
+</html>

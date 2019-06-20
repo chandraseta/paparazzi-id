@@ -4,6 +4,7 @@ dependencies:
 - pip
 - pip:
   - beautifulsoup4
+  - flask
   - gensim
   - jupyter
   - keras

@@ -1,0 +1,74 @@
+body {
+	font-family: 'Raleway';
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-align: center;
+}
+
+h2 {
+	color: 	#d6d6d6;
+}
+
+h4 {
+	margin-top: 2rem;
+	color: black;
+	padding-bottom: 1%;
+}
+
+.center {
+	display: block;
+	margin: 0 auto;
+	margin-top: 1rem;
+}
+
+.subContainer {
+	margin: 0 auto;
+}
+
+.subContainer tr td label {
+    width: 150px;
+	display: block;
+	padding: 10px;
+}
+
+.btn {
+	margin-bottom: 1.6rem;
+}
+
+.btn:hover {
+	cursor: pointer;
+}
+
+.card-body {
+	text-align: justify;
+}
+
+.card-error {
+	color: #CE2029;
+}
+
+.result {
+	font-size: 24pt;
+}
+
+.about {
+	width: 100%;
+	padding-left: 10%;
+	background-color:#FF74F4;
+	min-height: 100px;
+	color: white;
+	margin-top: 30px;
+	margin-bottom: 0px;
+}
+
+.jumbotron {
+	background-color: #d9edf7;
+	padding-top: 10px;
+	margin-bottom: 0px;
+}
+
+.navbar-inverse {
+    background-color: #1A2554 ;
+    border-color: #d9edf7;
+}
